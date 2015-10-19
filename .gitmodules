@@ -1,0 +1,3 @@
+[submodule "vdetlib"]
+	path = vdetlib
+	url = https://github.com/myfavouritekk/vdetlib.git
