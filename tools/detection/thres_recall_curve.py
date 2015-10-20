@@ -6,6 +6,7 @@ import sys
 sys.path.insert(1, '.')
 from vdetlib.utils.common import iou
 import scipy.io as sio
+import os
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
@@ -17,12 +18,19 @@ if __name__ == '__main__':
         thres_files = [line.strip() for line in f.readlines()]
 
     print "Loading gt thresholds..."
-    thres = [sio.loadmat(f)['thresholds'] for f in thres_files]
-    thres = np.asarray(sorted(thres, reverse=True))
+    thres = []
+    for thres_file in thres_files:
+        thres += sio.loadmat(thres_file)['thresholds'].ravel().tolist()
     print "Accumulating..."
     uniq_thres = np.unique(thres)
-    recalls = [np.count_nonzero(thres > cur_thres) / len(thres) \
+    recalls = [1. * np.count_nonzero(thres > cur_thres) / len(thres) \
                 for cur_thres in uniq_thres]
+    assert len(uniq_thres) == len(recalls)
+    save_dir = os.path.dirname(args.save_file)
+    if not os.path.isdir(save_dir):
+        os.makedirs(save_dir)
     sio.savemat(args.save_file,
         {'thres': uniq_thres, 'recall': recalls},
         do_compression=True)
+    print "Saved to {}.".format(args.save_file)
+
