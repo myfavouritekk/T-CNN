@@ -7,6 +7,7 @@ import h5py
 sys.path.insert(1, '.')
 from vdetlib.utils.common import iou
 import scipy.io as sio
+import os
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
@@ -17,6 +18,9 @@ if __name__ == '__main__':
 
     print "Processing {}".format(args.gt_boxfile)
     gt_boxes = sio.loadmat(args.gt_boxfile)['boxes']
+    if len(gt_boxes) == 0:
+        print "No gt boxes in {}".format(args.gt_boxfile)
+        sys.exit(0)
     try:
         alexnet_dets = sio.loadmat(args.alexnet_det_file)['d']
         boxes = alexnet_dets['boxes']
@@ -33,6 +37,9 @@ if __name__ == '__main__':
     # maxinum score from true positives for each gt box
     # yield -1000 if not any boxes covering the gt box
     thres = [np.max(max_scores[inds]) if np.any(inds) else -1000 for inds in tp]
+    save_dir = os.path.dirname(args.save_file)
+    if not os.path.isdir(save_dir):
+        os.makedirs(save_dir)
     sio.savemat(args.save_file,
         {'boxes': gt_boxes,
          'thresholds': thres}, do_compression=True)
