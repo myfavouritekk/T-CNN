@@ -2,9 +2,6 @@
 
 import argparse
 import numpy as np
-import sys
-sys.path.insert(1, '.')
-from vdetlib.utils.common import iou
 import scipy.io as sio
 import os
 
