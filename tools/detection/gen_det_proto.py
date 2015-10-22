@@ -47,4 +47,8 @@ if __name__ == '__main__':
                     })
                 det['scores'] = scores_proto
                 det_proto['detections'].append(det)
+    save_dir = os.path.dirname(args.save_det)
+    if not os.path.isdir(save_dir):
+        os.makedirs(save_dir)
     proto_dump(det_proto, args.save_det)
+
