@@ -42,7 +42,7 @@ if __name__ == '__main__':
                     enumerate(zip(imagenet_vdet_classes[1:], scores), start=1):
                     scores_proto.append({
                         "class": cls_name,
-                        "class_id": class_id,
+                        "class_index": class_id,
                         "score": float(score)
                     })
                 det['scores'] = scores_proto
