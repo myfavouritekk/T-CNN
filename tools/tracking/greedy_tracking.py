@@ -7,6 +7,7 @@ sys.path.insert(1, '.')
 from vdetlib.vdet.track import greedily_track_from_det, fcn_tracker
 from vdetlib.vdet.dataset import imagenet_vdet_class_idx
 from vdetlib.utils.protocol import proto_dump, proto_load, det_score
+import matlab.engine
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
@@ -29,13 +30,14 @@ if __name__ == '__main__':
     assert  vid_name == det_proto['video']
     print "Video: {}".format(vid_proto['video'])
 
+    eng = matlab.engine.start_matlab('-nodisplay -nojvm -nosplash -nodesktop')
     for cls_name in imagenet_vdet_class_idx:
         if cls_name == '__background__':
             continue
         print "Tracking {}...".format(cls_name)
         cls_idx = imagenet_vdet_class_idx[cls_name]
         track_proto = greedily_track_from_det(vid_proto, det_proto, fcn_tracker,
-            lambda x:det_score(x, cls_idx), args.num, args.job - 1, args.thres)
+            lambda x:det_score(x, cls_idx), args.num, args.job - 1, args.thres, eng)
 
         if not track_proto['tracks']:
             continue
