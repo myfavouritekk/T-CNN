@@ -34,6 +34,10 @@ if __name__ == '__main__':
     for cls_name in imagenet_vdet_class_idx:
         if cls_name == '__background__':
             continue
+        save_name = os.path.join(args.save_dir, '.'.join([vid_name, cls_name, 'track.gz']))
+        if os.path.isfile(save_name):
+            print "{} already exists.".format(save_name)
+            continue
         print "Tracking {}...".format(cls_name)
         cls_idx = imagenet_vdet_class_idx[cls_name]
         track_proto = greedily_track_from_det(vid_proto, det_proto, fcn_tracker,
@@ -41,5 +45,5 @@ if __name__ == '__main__':
 
         if not track_proto['tracks']:
             continue
-        save_name = os.path.join(args.save_dir, '.'.join([vid_name, cls_name, 'track.gz']))
         proto_dump(track_proto, save_name)
+
