@@ -25,6 +25,9 @@ if __name__ == '__main__':
 
     vid_proto = proto_load(args.vid_file)
     annot_proto = proto_load(args.annot_file)
+    if os.path.isfile(args.save_file):
+        print "{} already exists.".format(args.save_file)
+        sys.exit(0)
     if args.track_file == 'None':
         track_proto = track_proto_from_annot_proto(annot_proto)
     else:
@@ -43,4 +46,7 @@ if __name__ == '__main__':
 
     score_proto = scoring_tracks(vid_proto, track_proto, annot_proto,
         rcnn_sc, net, cls_index)
+    save_dir = os.path.dirname(args.save_file)
+    if not os.path.isdir(save_dir):
+        os.makedirs(save_dir)
     proto_dump(score_proto, args.save_file)
