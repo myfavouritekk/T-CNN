@@ -6,7 +6,7 @@ import scipy.io
 import numpy as np
 import os
 import sys
-sys.path.insert(1, os.path.join(os.path.dirname(__file__), '..'))
+sys.path.insert(1, os.path.join(os.path.dirname(__file__), '../..'))
 from vdetlib.vdet.dataset import index_vdet_to_det
 
 if __name__ == '__main__':
