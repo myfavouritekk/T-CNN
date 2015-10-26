@@ -20,6 +20,7 @@ if __name__ == '__main__':
     parser.add_argument('rcnn_model')
     parser.add_argument('save_file')
     parser.add_argument('--cls')
+    parser.add_argument('--job', type=int)
     args = parser.parse_args()
 
     vid_proto = proto_load(args.vid_file)
@@ -34,7 +35,7 @@ if __name__ == '__main__':
     assert vid_name == track_proto['video']
     cls_index = imagenet_vdet_class_idx[args.cls]
 
-    net = caffe_net(args.net_file, args.param_file)
+    net = caffe_net(args.net_file, args.param_file, args.job-1)
     rcnn_sc = lambda vid_proto, track_proto, net, class_idx: \
         rcnn_scoring(vid_proto, track_proto, net, class_idx, args.rcnn_model)
     rcnn_sc.__name__ = "rcnn_{}".format(
