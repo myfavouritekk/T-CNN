@@ -31,6 +31,11 @@ if __name__ == '__main__':
 
     # classify ground truth tracks if no track_file provided
     if args.track_file == 'None':
+        gt_classes = [annot['track'][0]['class'] \
+            for annot in annot_proto['annotations']]
+        if args.cls not in gt_classes:
+            print "{} not in gt file {}".format(args.cls, args.annot_file)
+            sys.exit(0)
         track_proto = track_proto_from_annot_proto(annot_proto)
     else:
         track_proto = proto_load(args.track_file)
@@ -51,7 +56,7 @@ if __name__ == '__main__':
     # ground truth scores, only save gt class scores
     if args.track_file == 'None':
         for tubelet in score_proto['tubelets']:
-            if not tubelet['gt']:
+            if tubelet['gt'] == 0:
                 del tubelet
         if not score_proto['tubelets']:
             sys.exit(0)
