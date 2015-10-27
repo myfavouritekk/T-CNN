@@ -28,6 +28,8 @@ if __name__ == '__main__':
     if os.path.isfile(args.save_file):
         print "{} already exists.".format(args.save_file)
         sys.exit(0)
+
+    # classify ground truth tracks if no track_file provided
     if args.track_file == 'None':
         track_proto = track_proto_from_annot_proto(annot_proto)
     else:
@@ -46,6 +48,14 @@ if __name__ == '__main__':
 
     score_proto = scoring_tracks(vid_proto, track_proto, annot_proto,
         rcnn_sc, net, cls_index)
+    # ground truth scores, only save gt class scores
+    if args.track_file == 'None':
+        for tubelet in score_proto['tubelets']:
+            if not tubelet['gt']:
+                del tubelet
+        if not score_proto['tubelets']:
+            sys.exit(0)
+    # save score proto or gt score proto
     save_dir = os.path.dirname(args.save_file)
     if not os.path.isdir(save_dir):
         os.makedirs(save_dir)
