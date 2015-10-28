@@ -2,10 +2,11 @@
 
 import argparse
 import os
+import numpy as np
 import sys
 sys.path.insert(1, '.')
 from vdetlib.utils.protocol import proto_load
-from vdetlib.utils.cython_nms import nms
+from vdetlib.utils.cython_nms import vid_nms
 
 def image_name_at_fame(vid_proto, frame_idx):
     vid_name = vid_proto['video']
@@ -27,6 +28,7 @@ if __name__ == '__main__':
     vid_name = vid_proto['video']
     assert vid_name == score_proto['video']
 
+    dets = []
     for tubelet in score_proto['tubelets']:
         if tubelet['gt'] == 1:
             raise ValueError('Dangerous: Score file contains gt tracks!')
@@ -37,7 +39,14 @@ if __name__ == '__main__':
             frame_idx = image_set[image_name]
             bbox = box['bbox']
             score = box['det_score']
-            print '{} {} {:.6f} {:.2f} {:.2f} {:.2f} {:.2f}'.format(
-                frame_idx, class_index, score,
-                bbox[0], bbox[1], bbox[2], bbox[3])
+            dets.append([int(frame_idx), class_index, score, bbox])
+
+    nms_boxes = [[det[0],]+det[-1]+[det[2],] for det in dets]
+    keep = vid_nms(np.asarray(nms_boxes).astype('float32'), 0.3)
+
+    kept_dets = [dets[i] for i in keep]
+    for frame_idx, class_index, score, bbox in kept_dets:
+        print '{} {} {:.6f} {:.2f} {:.2f} {:.2f} {:.2f}'.format(
+            frame_idx, class_index, score,
+            bbox[0], bbox[1], bbox[2], bbox[3])
 
