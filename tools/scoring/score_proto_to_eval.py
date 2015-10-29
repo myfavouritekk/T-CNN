@@ -19,6 +19,7 @@ if __name__ == '__main__':
     parser.add_argument('vid_file')
     parser.add_argument('score_file')
     parser.add_argument('image_set_file')
+    parser.add_argument('--varname')
     args = parser.parse_args()
 
     vid_proto = proto_load(args.vid_file)
@@ -38,7 +39,7 @@ if __name__ == '__main__':
             image_name = image_name_at_fame(vid_proto, frame_idx)
             frame_idx = image_set[image_name]
             bbox = box['bbox']
-            score = box['det_score']
+            score = box[args.varname]
             dets.append([int(frame_idx), class_index, score, bbox])
 
     nms_boxes = [[det[0],]+det[-1]+[det[2],] for det in dets]
