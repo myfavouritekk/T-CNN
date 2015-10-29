@@ -42,6 +42,14 @@ class TrackDataLayer(caffe.Layer):
             'track_scores',
             'anchors'
         ]
+
+        # phase, current only support setting phase in config file, so be careful
+        try:
+            self._phase = config['phase']
+            assert self._phase in ['test', 'train', 'valid']
+        except KeyError:
+            # default phase is test
+            self._phase = 'test'
         self._top_names = self._tot_top_names[0:len(top)-1]
         self._name_to_top_map = dict(zip(self._top_names,xrange(len(self._top_names))))
         self._name_to_top_map['labels'] = len(top)-1
@@ -55,17 +63,30 @@ class TrackDataLayer(caffe.Layer):
         self._mean_ious = map(lambda x:x['mean_iou'], self._tracks)
         self._pos_index = [i for i, iou in enumerate(self._mean_ious) if iou >= 0.5]
         self._neg_index = [i for i in xrange(len(self._mean_ious)) if i not in self._pos_index]
+        self._track_index = range(len(self._tracks))
 
         # reshape top blobs
         for top_id in xrange(len(top)):
             top[top_id].reshape(self._batch_size, 1, self._length)
 
 
+    def _rotate_list(self, l, n):
+        return l[n:] + l[:n]
+
+
     def forward(self, bottom, top):
-        pos_index = np.random.choice(self._pos_index, size=self._num_pos).tolist()
-        neg_index = np.random.choice(self._neg_index,
-            size=self._batch_size - self._num_pos).tolist()
-        for num_id, track_id in enumerate(pos_index+neg_index):
+        if self._phase == 'train':
+            pos_index = np.random.choice(self._pos_index, size=self._num_pos).tolist()
+            neg_index = np.random.choice(self._neg_index,
+                size=self._batch_size - self._num_pos).tolist()
+            batch_index = pos_index+neg_index
+        elif self._phase == 'valid':
+            batch_index = np.random.randint(len(self._tracks), size=self._batch_size).tolist()
+        else:
+            # test insequence
+            batch_index = self._track_index[:self._batch_size]
+            self._track_index = self._rotate_list(self._track_index, self._batch_size)
+        for num_id, track_id in enumerate(batch_index):
             track = self._tracks[track_id]
             # sample starting point, 0 if track length is too short
             st_index = random.randint(0, max(0, track['length'] - self._length))
