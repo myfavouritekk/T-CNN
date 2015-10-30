@@ -21,6 +21,10 @@ if __name__ == '__main__':
     parser.add_argument('save_file')
     parser.add_argument('--cls')
     parser.add_argument('--job', type=int)
+    parser.add_argument('--save_feat', dest='save_feat', action='store_true')
+    parser.set_defaults(save_feat=False)
+    parser.add_argument('--save_all_sc', dest='save_all_sc', action='store_true')
+    parser.set_defaults(save_all_sc=False)
     args = parser.parse_args()
 
     vid_proto = proto_load(args.vid_file)
@@ -47,7 +51,8 @@ if __name__ == '__main__':
 
     net = caffe_net(args.net_file, args.param_file, args.job-1)
     rcnn_sc = lambda vid_proto, track_proto, net, class_idx: \
-        rcnn_scoring(vid_proto, track_proto, net, class_idx, args.rcnn_model)
+        rcnn_scoring(vid_proto, track_proto, net, class_idx, args.rcnn_model,
+            save_feat=args.save_feat, save_all_sc=args.save_all_sc)
     rcnn_sc.__name__ = "rcnn_{}".format(
         os.path.splitext(os.path.basename(args.param_file))[0])
 
