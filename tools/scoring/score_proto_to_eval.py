@@ -38,7 +38,7 @@ if __name__ == '__main__':
             frame_idx = box['frame']
             image_name = image_name_at_fame(vid_proto, frame_idx)
             frame_idx = image_set[image_name]
-            bbox = box['bbox']
+            bbox = map(lambda x:max(x,0), box['bbox'])
             score = box[args.varname]
             dets.append([int(frame_idx), class_index, score, bbox])
 
