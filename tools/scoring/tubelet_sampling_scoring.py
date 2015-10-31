@@ -21,6 +21,8 @@ if __name__ == '__main__':
     parser.add_argument('save_file')
     parser.add_argument('--cls')
     parser.add_argument('--job', type=int)
+    parser.add_argument('--sampling_num', type=int)
+    parser.add_argument('--sampling_ratio', type=float)
     parser.add_argument('--save_feat', dest='save_feat', action='store_true')
     parser.set_defaults(save_feat=False)
     parser.add_argument('--save_all_sc', dest='save_all_sc', action='store_true')
@@ -57,6 +59,7 @@ if __name__ == '__main__':
         os.path.splitext(os.path.basename(args.param_file))[0])
 
     score_proto = scoring_tracks(vid_proto, track_proto, annot_proto,
+        args.sampling_num, args.sampling_ratio,
         rcnn_sc, net, cls_index)
     # ground truth scores, only save gt class scores
     if args.track_file == 'None':
