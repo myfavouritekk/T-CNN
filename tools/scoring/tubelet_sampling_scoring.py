@@ -54,12 +54,12 @@ if __name__ == '__main__':
     net = caffe_net(args.net_file, args.param_file, args.job-1)
     rcnn_sc = lambda vid_proto, track_proto, net, class_idx: \
         rcnn_sampling_scoring(vid_proto, track_proto, net, class_idx, args.rcnn_model,
+            args.sampling_num, args.sampling_ratio,
             save_feat=args.save_feat, save_all_sc=args.save_all_sc)
     rcnn_sc.__name__ = "rcnn_{}".format(
         os.path.splitext(os.path.basename(args.param_file))[0])
 
     score_proto = scoring_tracks(vid_proto, track_proto, annot_proto,
-        args.sampling_num, args.sampling_ratio,
         rcnn_sc, net, cls_index)
     # ground truth scores, only save gt class scores
     if args.track_file == 'None':
