@@ -56,7 +56,7 @@ if __name__ == '__main__':
         rcnn_sampling_scoring(vid_proto, track_proto, net, class_idx, args.rcnn_model,
             args.sampling_num, args.sampling_ratio,
             save_feat=args.save_feat, save_all_sc=args.save_all_sc)
-    rcnn_sc.__name__ = "rcnn_{}".format(
+    rcnn_sc.__name__ = "rcnn_sampling_{}".format(
         os.path.splitext(os.path.basename(args.param_file))[0])
 
     score_proto = scoring_tracks(vid_proto, track_proto, annot_proto,
