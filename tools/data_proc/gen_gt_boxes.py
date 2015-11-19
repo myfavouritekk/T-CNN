@@ -27,7 +27,10 @@ if __name__ == '__main__':
     tracks = [annot['track'] for annot in annot_proto['annotations']]
     for frame in vid_proto['frames']:
         save_name = os.path.splitext(os.path.basename(frame['path']))[0]
-        boxes = [box['bbox'] for track in tracks for box in track if box['frame'] == frame['frame']]
+        boxes_cls = [[box['bbox'], box['class_index']] for track in tracks for box in track if box['frame'] == frame['frame']]
         save_file = os.path.join(args.save_dir, save_name + '.mat')
-        sio.savemat(save_file, {'boxes': np.asarray(boxes, dtype='float64')},
+        boxes = map(lambda x:x[0], boxes_cls)
+        classes = map(lambda x:x[1], boxes_cls)
+        sio.savemat(save_file, {'boxes': np.asarray(boxes, dtype='float64'),
+                                'labels': np.asarray(classes, dtype='float64')},
             do_compression=True)
