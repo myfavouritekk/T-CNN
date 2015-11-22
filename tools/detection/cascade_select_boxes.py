@@ -19,7 +19,11 @@ if __name__ == '__main__':
 				print "{} already exists.".format(args.save_file)
 				sys.exit(0)
     if not os.path.isdir(os.path.dirname(args.save_file)):
-        os.makedirs(os.path.dirname(args.save_file))
+        try:
+            os.makedirs(os.path.dirname(args.save_file))
+        except OSError, e:
+            if e.errno != 17:
+                raise e
 
     var = h5py.File(args.matfile)[args.varname]
     boxes = np.transpose(var['boxes'])
