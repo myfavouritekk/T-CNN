@@ -37,7 +37,7 @@ if __name__ == '__main__':
         boxes = map(lambda x:x[0], boxes_cls_size)
         classes = map(lambda x:x[1], boxes_cls_size)
         frame_size = map(lambda x:x[2], boxes_cls_size)
-        if boxes_cls_size is not []:
+        if len(frame_size) > 0:
             height = frame_size[0][0]
             width = frame_size[0][1]
         else:
