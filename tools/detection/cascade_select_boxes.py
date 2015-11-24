@@ -16,8 +16,8 @@ if __name__ == '__main__':
     args = parser.parse_args()
 
     if os.path.isfile(args.save_file):
-				print "{} already exists.".format(args.save_file)
-				sys.exit(0)
+        print "{} already exists.".format(args.save_file)
+        sys.exit(0)
     if not os.path.isdir(os.path.dirname(args.save_file)):
         try:
             os.makedirs(os.path.dirname(args.save_file))
@@ -34,5 +34,5 @@ if __name__ == '__main__':
     ratio = np.sum(keep) * 1. / keep.size
     sio.savemat(args.save_file, {'boxes': kept_boxes,
                                  'alexnet_scores': kept_scores})
-    print "{}: {:.2f} % boxes kept".format(args.matfile, ratio * 100)
+    print "{}: {:.2f} %% boxes kept".format(args.matfile, ratio * 100)
 

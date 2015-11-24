@@ -16,6 +16,8 @@ if __name__ == '__main__':
     parser.add_argument('save_dir')
     parser.add_argument('--num', type=int, default=10,
                         help='Number of detections to track. [10]')
+    parser.add_argument('--max_frames', type=int, default=None,
+                        help='Maximum track length. [Inf]')
     parser.add_argument('--thres', type=float, default=0.,
                         help='Threshold to terminate tracking. [0.]')
     parser.add_argument('--job', type=int, default=1,
@@ -41,7 +43,8 @@ if __name__ == '__main__':
         print "Tracking {}...".format(cls_name)
         cls_idx = imagenet_vdet_class_idx[cls_name]
         track_proto = greedily_track_from_det(vid_proto, det_proto, fcn_tracker,
-            lambda x:det_score(x, cls_idx), args.num, args.job - 1, args.thres, eng)
+            lambda x:det_score(x, cls_idx), args.num, args.job - 1, args.thres, eng,
+            max_frames = args.max_frames)
 
         if not track_proto['tracks']:
             continue
