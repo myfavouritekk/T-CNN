@@ -7,6 +7,7 @@ sys.path.insert(1, '.')
 from vdetlib.vdet.track import greedily_track_from_det, fcn_tracker
 from vdetlib.vdet.dataset import imagenet_vdet_class_idx
 from vdetlib.utils.protocol import proto_dump, proto_load, det_score
+from vdetlib.utils.common import options
 import matlab.engine
 
 if __name__ == '__main__':
@@ -16,6 +17,10 @@ if __name__ == '__main__':
     parser.add_argument('save_dir')
     parser.add_argument('--num', type=int, default=10,
                         help='Number of detections to track. [10]')
+    parser.add_argument('--max_frames', type=int, default=None,
+                        help='Maximum track length. [Inf]')
+    parser.add_argument('--step', type=int, default=1,
+                        help='Tracking frame step. [1]')
     parser.add_argument('--thres', type=float, default=0.,
                         help='Threshold to terminate tracking. [0.]')
     parser.add_argument('--job', type=int, default=1,
@@ -31,6 +36,9 @@ if __name__ == '__main__':
     print "Video: {}".format(vid_proto['video'])
 
     eng = matlab.engine.start_matlab('-nodisplay -nojvm -nosplash -nodesktop')
+    opts = options({'engine': eng, 'max_tracks': args.num, 'thres': args.thres,
+                   'gpu': args.job - 1, 'max_frames': args.max_frames,
+                   'step': args.step})
     for cls_name in imagenet_vdet_class_idx:
         if cls_name == '__background__':
             continue
@@ -41,7 +49,7 @@ if __name__ == '__main__':
         print "Tracking {}...".format(cls_name)
         cls_idx = imagenet_vdet_class_idx[cls_name]
         track_proto = greedily_track_from_det(vid_proto, det_proto, fcn_tracker,
-            lambda x:det_score(x, cls_idx), args.num, args.job - 1, args.thres, eng)
+            lambda x:det_score(x, cls_idx), opts)
 
         if not track_proto['tracks']:
             continue
