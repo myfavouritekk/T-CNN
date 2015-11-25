@@ -19,6 +19,8 @@ if __name__ == '__main__':
                         help='Number of detections to track. [10]')
     parser.add_argument('--max_frames', type=int, default=None,
                         help='Maximum track length. [Inf]')
+    parser.add_argument('--step', type=int, default=1,
+                        help='Tracking frame step. [1]')
     parser.add_argument('--thres', type=float, default=0.,
                         help='Threshold to terminate tracking. [0.]')
     parser.add_argument('--job', type=int, default=1,
@@ -35,7 +37,8 @@ if __name__ == '__main__':
 
     eng = matlab.engine.start_matlab('-nodisplay -nojvm -nosplash -nodesktop')
     opts = options({'engine': eng, 'max_tracks': args.num, 'thres': args.thres,
-                   'gpu': args.job - 1, 'max_frames': args.max_frames})
+                   'gpu': args.job - 1, 'max_frames': args.max_frames,
+                   'step': args.step})
     for cls_name in imagenet_vdet_class_idx:
         if cls_name == '__background__':
             continue
