@@ -37,10 +37,10 @@ if __name__ == '__main__':
         boxes = map(lambda x:x[0], boxes_cls_size)
         classes = map(lambda x:x[1], boxes_cls_size)
         frame_size = map(lambda x:x[2], boxes_cls_size)
-        if len(frame_size) > 0:
+        try:
             height = frame_size[0][0]
             width = frame_size[0][1]
-        else:
+        except IndexError:
             frame_path = frame_path_at(vid_proto, frame['frame'])
             height, width = cv2.imread(frame_path).shape[:2]
         sio.savemat(save_file, {'boxes': np.asarray(boxes, dtype='float64'),
