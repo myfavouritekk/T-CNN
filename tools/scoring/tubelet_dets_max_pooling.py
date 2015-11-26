@@ -3,6 +3,7 @@
 import argparse
 import sys
 import os
+sys.path.insert(1, '.')
 from vdetlib.utils.protocol import proto_load, proto_dump, track_proto_from_annot_proto
 from vdetlib.vdet.dataset import imagenet_vdet_class_idx, imagenet_det_200_class_idx
 from vdetlib.vdet.tubelet_cls import scoring_tracks, dets_spatial_max_pooling, score_proto_temporal_maxpool, score_proto_interpolation
