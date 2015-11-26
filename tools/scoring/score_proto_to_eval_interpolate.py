@@ -84,8 +84,12 @@ if __name__ == '__main__':
             y2 = map(lambda x:x[3][3], temp_dets)
             map_funs = []
             for y in [scores, x1, y1, x2, y2]:
-                interpolator = interp1d(idx, y)
-                extrapolator = extrap1d(interpolator)
+                if len(y) >= 2:
+                    interpolator = interp1d(idx, y)
+                    extrapolator = extrap1d(interpolator)
+                else:
+                    # if not enough smaples, fall back to identity function
+                    extrapolator = lambda x:map(lambda y:y, x)
                 map_funs.append(extrapolator)
             o_indices = map(lambda x:overall_idx(vid_proto, x, image_set), all_frame_idx)
             all_scores = map_funs[0](all_frame_idx)

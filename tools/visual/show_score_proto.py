@@ -32,6 +32,8 @@ if __name__ == '__main__':
     vid_name = vid_proto['video']
     assert vid_name == score_proto['video']
 
+    if args.save_dir is None:
+        cv2.namedWindow('tracks')
     for frame in vid_proto['frames']:
         if args.save_dir:
             if not os.path.isdir(args.save_dir):
@@ -63,4 +65,5 @@ if __name__ == '__main__':
             if cv2.waitKey(0) == ord('q'):
                 cv2.destroyAllWindows()
                 sys.exit(0)
-            cv2.destroyAllWindows()
+    if args.save_dir is None:
+        cv2.destroyAllWindows()
