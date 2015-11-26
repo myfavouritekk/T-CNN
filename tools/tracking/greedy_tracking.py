@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 
+import matlab.engine
 import argparse
 import os
 import sys
@@ -8,7 +9,6 @@ from vdetlib.vdet.track import greedily_track_from_det, fcn_tracker
 from vdetlib.vdet.dataset import imagenet_vdet_class_idx
 from vdetlib.utils.protocol import proto_dump, proto_load, det_score
 from vdetlib.utils.common import options
-import matlab.engine
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
