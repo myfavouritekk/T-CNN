@@ -22,6 +22,8 @@ if __name__ == '__main__':
     parser.add_argument('image_set_file')
     parser.add_argument('--varname')
     args = parser.parse_args()
+    
+    global_thres = -2.5
 
     vid_proto = proto_load(args.vid_file)
     score_proto = proto_load(args.score_file)
@@ -48,6 +50,9 @@ if __name__ == '__main__':
             bbox[1] = min(height - 1, bbox[1])
             bbox[3] = min(height - 1, bbox[3])
             score = box[args.varname]
+            # ignore boxes with very low confidence
+            if score < global_thres:
+                continue
             dets.append([int(frame_idx), class_index, score, bbox])
 
     nms_boxes = [[det[0],]+det[-1]+[det[2],] for det in dets]
