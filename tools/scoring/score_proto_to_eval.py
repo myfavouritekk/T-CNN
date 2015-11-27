@@ -4,8 +4,9 @@ import argparse
 import os
 import numpy as np
 import sys
+from scipy.misc import imread
 sys.path.insert(1, '.')
-from vdetlib.utils.protocol import proto_load
+from vdetlib.utils.protocol import proto_load, frame_path_at
 from vdetlib.utils.cython_nms import vid_nms
 
 def image_name_at_fame(vid_proto, frame_idx):
@@ -29,6 +30,9 @@ if __name__ == '__main__':
     vid_name = vid_proto['video']
     assert vid_name == score_proto['video']
 
+    # get image shape
+    height, width = imread(frame_path_at(vid_proto, 1)).shape[:2]
+
     dets = []
     for tubelet in score_proto['tubelets']:
         if tubelet['gt'] == 1:
@@ -39,11 +43,15 @@ if __name__ == '__main__':
             image_name = image_name_at_fame(vid_proto, frame_idx)
             frame_idx = image_set[image_name]
             bbox = map(lambda x:max(x,0), box['bbox'])
+            bbox[0] = min(width - 1, bbox[0])
+            bbox[2] = min(width - 1, bbox[2])
+            bbox[1] = min(height - 1, bbox[1])
+            bbox[3] = min(height - 1, bbox[3])
             score = box[args.varname]
             dets.append([int(frame_idx), class_index, score, bbox])
 
     nms_boxes = [[det[0],]+det[-1]+[det[2],] for det in dets]
-    keep = vid_nms(np.asarray(nms_boxes).astype('float32'), 0.3)
+    keep = vid_nms(np.asarray(nms_boxes).astype('float32'), 0.5)
 
     kept_dets = [dets[i] for i in keep]
     for frame_idx, class_index, score, bbox in kept_dets:
