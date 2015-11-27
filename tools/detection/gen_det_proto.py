@@ -27,6 +27,8 @@ if __name__ == '__main__':
         frame_id = frame['frame']
         basename = os.path.splitext(frame['path'])[0]
         score_file = os.path.join(args.score_root, basename + '.mat')
+        if not os.path.isfile(score_file):
+            score_file = os.path.join(args.score_root, frame['path'] + '.mat')
         if os.path.isfile(score_file):
             d = sio.loadmat(score_file)
             boxes = d['boxes']
