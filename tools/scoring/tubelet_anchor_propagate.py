@@ -27,7 +27,11 @@ if __name__ == '__main__':
         except:
             pass
 
-    track_files = glob(osp.join(args.track_dir, '*.track'))
+    track_files = glob(osp.join(args.track_dir, '*.track*'))
+    if len(track_files) == 0:
+        print "Warning: {} has no tracks".format(args.track_dir)
+        sys.exit(0)
+
     for track_file in track_files:
         track_proto = proto_load(track_file)
 
@@ -49,3 +53,4 @@ if __name__ == '__main__':
             print "{} already exists.".format(save_file)
             continue
         proto_dump(interpolated_score_proto, save_file)
+        print "{} created.".format(save_file)
