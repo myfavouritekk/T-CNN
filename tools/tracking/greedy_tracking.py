@@ -40,7 +40,7 @@ if __name__ == '__main__':
     eng = matlab.engine.start_matlab('-nodisplay -nojvm -nosplash -nodesktop')
     opts = options({'engine': eng, 'max_tracks': args.num, 'thres': args.thres,
                    'gpu': args.job - 1, 'max_frames': args.max_frames,
-                   'step': args.step, 'nms_thres': nms_thres})
+                   'step': args.step, 'nms_thres': args.nms_thres})
     for cls_name in imagenet_vdet_class_idx:
         if cls_name == '__background__':
             continue
