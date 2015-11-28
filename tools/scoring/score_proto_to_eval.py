@@ -9,11 +9,6 @@ sys.path.insert(1, '.')
 from vdetlib.utils.protocol import proto_load, frame_path_at
 from vdetlib.utils.cython_nms import vid_nms
 
-def image_name_at_fame(vid_proto, frame_idx):
-    vid_name = vid_proto['video']
-    for frame in vid_proto['frames']:
-        if frame['frame'] == frame_idx:
-            return os.path.join(vid_name, os.path.splitext(frame['path'])[0])
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
@@ -22,7 +17,7 @@ if __name__ == '__main__':
     parser.add_argument('image_set_file')
     parser.add_argument('--varname')
     args = parser.parse_args()
-    
+
     global_thres = -2.5
 
     vid_proto = proto_load(args.vid_file)
@@ -31,6 +26,13 @@ if __name__ == '__main__':
         image_set = dict([line.strip().split() for line in f.readlines()])
     vid_name = vid_proto['video']
     assert vid_name == score_proto['video']
+
+    # build dict
+    frame_to_image_name = {}
+    for frame in vid_proto['frames']:
+        frame_id = frame['frame']
+        frame_to_image_name[frame_id] = os.path.join(
+            vid_name, os.path.splitext(frame['path'])[0])
 
     # get image shape
     height, width = imread(frame_path_at(vid_proto, 1)).shape[:2]
@@ -42,7 +44,7 @@ if __name__ == '__main__':
         class_index = tubelet['class_index']
         for box in tubelet['boxes']:
             frame_idx = box['frame']
-            image_name = image_name_at_fame(vid_proto, frame_idx)
+            image_name = frame_to_image_name[frame_idx]
             frame_idx = image_set[image_name]
             bbox = map(lambda x:max(x,0), box['bbox'])
             bbox[0] = min(width - 1, bbox[0])
@@ -63,4 +65,3 @@ if __name__ == '__main__':
         print '{} {} {:.6f} {:.2f} {:.2f} {:.2f} {:.2f}'.format(
             frame_idx, class_index, score,
             bbox[0], bbox[1], bbox[2], bbox[3])
-
