@@ -44,7 +44,7 @@ if __name__ == '__main__':
         score_proto = anchor_propagate(vid_proto, track_proto, det_proto, cls_index)
 
         # interpolation
-        interpolated_score_proto = score_proto_interpolation(score_proto)
+        interpolated_score_proto = score_proto_interpolation(score_proto, vid_proto)
 
         # save score proto
         save_file = osp.join(args.save_dir,
