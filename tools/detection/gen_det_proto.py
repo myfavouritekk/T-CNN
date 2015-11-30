@@ -39,10 +39,10 @@ if __name__ == '__main__':
                 boxes = d['boxes']
                 zs = d['zs']
             except NotImplementedError:
-                d = h5py.File(score_file)
-                # skip empty boxes
-                boxes = d['boxes'].value.T.astype('float32')
-                zs = d['zs'].value.T.astype('float32')
+                with h5py.File(score_file) as d:
+                    # skip empty boxes
+                    boxes = d['boxes'].value.T.astype('float32')
+                    zs = d['zs'].value.T.astype('float32')
             if boxes.ndim == 1:
                 continue
             assert boxes.shape[0] == zs.shape[0]
