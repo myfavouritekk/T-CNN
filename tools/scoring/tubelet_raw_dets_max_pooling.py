@@ -7,7 +7,7 @@ import os.path as osp
 from argparse import ArgumentParser
 from glob import glob
 sys.path.insert(1, '.')
-from vdetlib.utils.protocol import proto_load, proto_dump, track_proto_from_annot_proto, load_raw_det
+from vdetlib.utils.protocol import proto_load, proto_dump, track_proto_from_annot_proto, load_frame_to_det
 from vdetlib.vdet.dataset import imagenet_vdet_class_idx, imagenet_det_200_class_idx
 from vdetlib.vdet.tubelet_cls import scoring_tracks, raw_dets_spatial_max_pooling, score_proto_temporal_maxpool, score_proto_interpolation
 
@@ -15,7 +15,7 @@ import time
 
 def main(args):
     vid_proto = proto_load(args.vid_file)
-    frame_to_det = load_raw_det(vid_proto, args.det_dir)
+    frame_to_det = load_frame_to_det(vid_proto, args.det_dir)
 
     if not os.path.isdir(args.save_dir):
         try:
