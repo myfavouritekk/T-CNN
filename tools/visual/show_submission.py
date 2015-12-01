@@ -10,7 +10,7 @@ from PyQt4 import QtGui, QtCore
 
 
 DATA_DIR = 'External/exp/dataset/ILSVRC2015/Data/VID'
-IMAGESETS_DIR = 'External/exp/dataset/ILSVRC2015/ImageSets_initial/VID'
+IMAGESETS_DIR = 'External/exp/dataset/ILSVRC2015/ImageSets/VID'
 
 
 CLASS_NAMES = ['background', 'airplane', 'antelope', 'bear', 'bicycle', 'bird', 'bus', 'car', 'cattle', 'dog', 'domestic_cat', 'elephant', 'fox', 'giant_panda', 'hamster', 'horse', 'lion', 'lizard', 'monkey', 'motorcycle', 'rabbit', 'red_panda', 'sheep', 'snake', 'squirrel', 'tiger', 'train', 'turtle', 'watercraft', 'whale', 'zebra']
@@ -172,17 +172,33 @@ class MainWindow(QtGui.QMainWindow):
     def open(self, subset='val'):
         file_path = QtGui.QFileDialog.getOpenFileName(self,
                 'Open {} submission'.format(subset),
-                '.')
+                'External/exp/result_vid')
         if len(str(file_path)) == 0: return
+        # Read video classification result
+        self.vid_cls = None
+        with open('vid_cls/{}_vid_cls_prob.txt'.format(subset)) as f:
+            lines = f.readlines()
+            self.vid_cls = {}
+            for line in lines:
+                line = line.strip().split()
+                self.vid_cls[line[0]] = np.asarray(map(float, line[1:]))
+        # Read submission text
         self.videos, self.fid_to_path, self.ret = read_submission(
                 file_path, subset)
         self.refresh_ui()
+        self.setWindowTitle(osp.splitext(osp.basename(str(file_path)))[0])
 
     def show_video(self, item):
-        self.fids = self.videos[str(item.text())]
+        vid_name = str(item.text())
+        self.fids = self.videos[vid_name]
         self.frames = [self.fid_to_path[fid] for fid in self.fids]
         self.show_frame(0)
-        self.status.setText(str(item.text()))
+        status_text = vid_name
+        if self.vid_cls is not None and vid_name in self.vid_cls:
+            label = np.argmax(self.vid_cls[vid_name])
+            status_text += ' {} ({:.1%})'.format(CLASS_NAMES[label + 1],
+                                                self.vid_cls[vid_name][label])
+        self.status.setText(status_text)
         self.total.setText(' / {}  '.format(len(self.frames)))
 
     def show_frame(self, frame_index):
