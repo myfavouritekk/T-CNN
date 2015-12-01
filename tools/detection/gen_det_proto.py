@@ -6,6 +6,7 @@ import scipy.io as sio
 import os
 import sys
 sys.path.insert(1, '.')
+import h5py
 from vdetlib.vdet.dataset import imagenet_vdet_classes
 from vdetlib.utils.common import quick_args
 from vdetlib.utils.protocol import proto_load, proto_dump, bbox_hash
@@ -19,6 +20,9 @@ if __name__ == '__main__':
     vid_name = vid_proto['video']
     assert  vid_name == os.path.basename(os.path.normpath(args.score_root))
     print "Processing {}.".format(vid_name)
+    if os.path.isfile(args.save_det):
+        print "{} already exists.".format(args.save_det)
+        sys.exit(0)
 
     det_proto = {}
     det_proto['video'] = vid_name
@@ -30,9 +34,18 @@ if __name__ == '__main__':
         if not os.path.isfile(score_file):
             score_file = os.path.join(args.score_root, frame['path'] + '.mat')
         if os.path.isfile(score_file):
-            d = sio.loadmat(score_file)
-            boxes = d['boxes']
-            zs = d['zs']
+            try:
+                d = sio.loadmat(score_file)
+                boxes = d['boxes']
+                zs = d['zs']
+            except NotImplementedError:
+                with h5py.File(score_file) as d:
+                    # skip empty boxes
+                    boxes = d['boxes'].value.T.astype('float32')
+                    zs = d['zs'].value.T.astype('float32')
+            if boxes.ndim == 1:
+                continue
+            assert boxes.shape[0] == zs.shape[0]
             for box, scores in zip(boxes, zs):
                 det = {}
                 bbox = box.tolist()
@@ -51,6 +64,9 @@ if __name__ == '__main__':
                 det_proto['detections'].append(det)
     save_dir = os.path.dirname(args.save_det)
     if not os.path.isdir(save_dir):
-        os.makedirs(save_dir)
+        try:
+            os.makedirs(save_dir)
+        except:
+            raise
     proto_dump(det_proto, args.save_det)
 

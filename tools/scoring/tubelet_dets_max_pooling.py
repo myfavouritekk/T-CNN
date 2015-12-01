@@ -51,7 +51,7 @@ if __name__ == '__main__':
         temporal_max_score_proto = score_proto_temporal_maxpool(score_proto, args.window)
 
         # interpolation
-        interpolated_score_proto = score_proto_interpolation(temporal_max_score_proto)
+        interpolated_score_proto = score_proto_interpolation(temporal_max_score_proto, vid_proto)
 
         # save score proto
         save_file = osp.join(args.save_dir,
