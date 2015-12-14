@@ -11,6 +11,9 @@ from PyQt4 import QtGui, QtCore
 
 DATA_DIR = 'External/exp/dataset/ILSVRC2015/Data/VID'
 IMAGESETS_DIR = 'External/exp/dataset/ILSVRC2015/ImageSets/VID'
+SUBMISSION_DIR = 'External/exp/result_vid'
+SCREENSHOT_DIR = 'External/exp/screenshot'
+VIDEOSHOT_DIR = 'External/exp/videoshot'
 
 
 CLASS_NAMES = ['background', 'airplane', 'antelope', 'bear', 'bicycle', 'bird', 'bus', 'car', 'cattle', 'dog', 'domestic_cat', 'elephant', 'fox', 'giant_panda', 'hamster', 'horse', 'lion', 'lizard', 'monkey', 'motorcycle', 'rabbit', 'red_panda', 'sheep', 'snake', 'squirrel', 'tiger', 'train', 'turtle', 'watercraft', 'whale', 'zebra']
@@ -67,24 +70,24 @@ def draw_predictions(file_path, predictions, class_index,
         class_name = CLASS_NAMES[pred.class_index]
         x1, y1, x2, y2 = map(int, pred.bbox)
         # bbox
-        painter.setPen(QtGui.QPen(PRESET_COLORS[i % len(PRESET_COLORS)], 2.0))
+        painter.setPen(QtGui.QPen(PRESET_COLORS[i % len(PRESET_COLORS)], 10.0))
         painter.setBrush(QtGui.QBrush())
         painter.drawRect(x1, y1, x2 - x1 + 1, y2 - y1 + 1)
         # label background rect
         painter.setPen(QtGui.QPen(PRESET_COLORS[i % len(PRESET_COLORS)], 2.0))
         painter.setBrush(QtGui.QBrush(PRESET_COLORS[i % len(PRESET_COLORS)]))
         if class_index > 0:
-            painter.drawRect(x1, y1, min(x2 - x1 + 1, 60), 25)
+            painter.drawRect(x1, y1, min(x2 - x1 + 1, 100), 30)
         else:
-            painter.drawRect(x1, y1, min(x2 - x1 + 1, 150), 25)
+            painter.drawRect(x1, y1, min(x2 - x1 + 1, 200), 30)
         # label text
         painter.setPen(QtGui.QPen(QtGui.QColor(255, 255, 255)))
         painter.setBrush(QtGui.QBrush())
-        painter.setFont(QtGui.QFont('Arial', 14, QtGui.QFont.Bold))
+        painter.setFont(QtGui.QFont('Arial', 20, QtGui.QFont.Bold))
         if class_index > 0:
-            painter.drawText(x1 + 3, y1 + 20, '{:.2f}'.format(pred.score))
+            painter.drawText(x1 + 4, y1 + 24, '{:.2f}'.format(pred.score))
         else:
-            painter.drawText(x1 + 3, y1 + 20,
+            painter.drawText(x1 + 4, y1 + 24,
                              '{} {:.2f}'.format(class_name, pred.score))
     return img
 
@@ -125,6 +128,10 @@ class MainWindow(QtGui.QMainWindow):
         score_button = QtGui.QPushButton("Set")
         score_button.setFixedWidth(50)
         score_button.clicked.connect(self.set_score_range)
+        screenshot_act = QtGui.QAction('Screenshot', self)
+        screenshot_act.triggered.connect(self.screenshot)
+        videoshot_act = QtGui.QAction('Videoshot', self)
+        videoshot_act.triggered.connect(self.videoshot)
         toolbar = self.addToolBar("Tool bar")
         toolbar.addWidget(self.status)
         toolbar.addAction(prev_act)
@@ -139,6 +146,8 @@ class MainWindow(QtGui.QMainWindow):
         toolbar.addWidget(QtGui.QLabel(" - "))
         toolbar.addWidget(self.score_high_edit)
         toolbar.addWidget(score_button)
+        toolbar.addAction(screenshot_act)
+        toolbar.addAction(videoshot_act)
         # video list
         self.video_list = QtGui.QListWidget()
         self.video_list.setSizePolicy(QtGui.QSizePolicy.Maximum,
@@ -171,8 +180,7 @@ class MainWindow(QtGui.QMainWindow):
 
     def open(self, subset='val'):
         file_path = QtGui.QFileDialog.getOpenFileName(self,
-                'Open {} submission'.format(subset),
-                'External/exp/result_vid')
+                'Open {} submission'.format(subset), SUBMISSION_DIR)
         if len(str(file_path)) == 0: return
         # Read video classification result
         self.vid_cls = None
@@ -190,6 +198,7 @@ class MainWindow(QtGui.QMainWindow):
 
     def show_video(self, item):
         vid_name = str(item.text())
+        self.vid_name = vid_name
         self.fids = self.videos[vid_name]
         self.frames = [self.fid_to_path[fid] for fid in self.fids]
         self.show_frame(0)
@@ -245,6 +254,24 @@ class MainWindow(QtGui.QMainWindow):
         self.score_low = low
         self.score_high = high
         self.show_frame(self.cur_frame_index)
+
+    def screenshot(self):
+        file_name = osp.splitext(osp.basename(self.frames[self.cur_frame_index]))[0]
+        file_name = self.vid_name + '_' + file_name + '.png'
+        pixmap = self.image_panel.pixmap()
+        pixmap.save(osp.join(SCREENSHOT_DIR, file_name))
+
+    def videoshot(self):
+        folder = osp.join(VIDEOSHOT_DIR, self.vid_name)
+        if not osp.isdir(folder):
+            os.makedirs(folder)
+        for frame_index, frame_path in enumerate(self.frames):
+            preds = self.ret[self.fids[frame_index]]
+            qimg = draw_predictions(frame_path, preds, self.cur_class_index,
+                                    self.score_low, self.score_high)
+            file_name = osp.splitext(osp.basename(frame_path))[0]
+            file_name = self.vid_name + '_' + file_name + '.png'
+            qimg.save(osp.join(folder, file_name))
 
 
 if __name__ == '__main__':
