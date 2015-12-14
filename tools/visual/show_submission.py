@@ -182,14 +182,6 @@ class MainWindow(QtGui.QMainWindow):
         file_path = QtGui.QFileDialog.getOpenFileName(self,
                 'Open {} submission'.format(subset), SUBMISSION_DIR)
         if len(str(file_path)) == 0: return
-        # Read video classification result
-        self.vid_cls = None
-        with open('vid_cls/{}_vid_cls_prob.txt'.format(subset)) as f:
-            lines = f.readlines()
-            self.vid_cls = {}
-            for line in lines:
-                line = line.strip().split()
-                self.vid_cls[line[0]] = np.asarray(map(float, line[1:]))
         # Read submission text
         self.videos, self.fid_to_path, self.ret = read_submission(
                 file_path, subset)
@@ -203,10 +195,6 @@ class MainWindow(QtGui.QMainWindow):
         self.frames = [self.fid_to_path[fid] for fid in self.fids]
         self.show_frame(0)
         status_text = vid_name
-        if self.vid_cls is not None and vid_name in self.vid_cls:
-            label = np.argmax(self.vid_cls[vid_name])
-            status_text += ' {} ({:.1%})'.format(CLASS_NAMES[label + 1],
-                                                self.vid_cls[vid_name][label])
         self.status.setText(status_text)
         self.total.setText(' / {}  '.format(len(self.frames)))
 
