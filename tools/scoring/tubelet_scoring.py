@@ -13,14 +13,15 @@ from vdetlib.vdet.tubelet_cls import scoring_tracks, rcnn_scoring
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('vid_file')
-    parser.add_argument('annot_file')
     parser.add_argument('track_file')
     parser.add_argument('net_file')
     parser.add_argument('param_file')
     parser.add_argument('rcnn_model')
     parser.add_argument('save_file')
     parser.add_argument('--cls')
-    parser.add_argument('--job', type=int)
+    parser.add_argument('--job', type=int, default=1)
+    parser.add_argument('--annot_file', default=None,
+        help='Annotation file if available to calculate gt overlaps for training.')
     parser.add_argument('--save_feat', dest='save_feat', action='store_true')
     parser.set_defaults(save_feat=False)
     parser.add_argument('--save_all_sc', dest='save_all_sc', action='store_true')
@@ -28,7 +29,10 @@ if __name__ == '__main__':
     args = parser.parse_args()
 
     vid_proto = proto_load(args.vid_file)
-    annot_proto = proto_load(args.annot_file)
+    if args.annot_file is None:
+        annot_proto = None
+    else:
+        annot_proto = proto_load(args.annot_file)
     if os.path.isfile(args.save_file):
         print "{} already exists.".format(args.save_file)
         sys.exit(0)
@@ -45,7 +49,8 @@ if __name__ == '__main__':
         track_proto = proto_load(args.track_file)
 
     vid_name = vid_proto['video']
-    assert vid_name == annot_proto['video']
+    if annot_proto is not None:
+        assert vid_name == annot_proto['video']
     assert vid_name == track_proto['video']
     cls_index = imagenet_vdet_class_idx[args.cls]
 
