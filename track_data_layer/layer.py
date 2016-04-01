@@ -57,7 +57,7 @@ class TrackDataLayer(caffe.Layer):
         return tracks
 
     def setup(self, bottom, top):
-        layer_params = yaml.load(self.param_str)
+        layer_params = yaml.load(self.param_str_)
         config = yaml.load(open(layer_params['config']).read())
 
         assert len(top) >= 1 and len(top) <= 6
