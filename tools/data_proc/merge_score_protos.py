@@ -11,7 +11,7 @@ if __name__ == '__main__':
     parser.add_argument('score_file1')
     parser.add_argument('score_file2')
     parser.add_argument('save_file')
-    parser.add_argument('--scheme', required=True)
+    parser.add_argument('--scheme', required=True, choices=['combine', 'max'])
     args = parser.parse_args()
     if os.path.isfile(args.save_file):
         print '{} already exists.'.format(args.save_file)

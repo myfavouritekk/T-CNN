@@ -16,7 +16,7 @@ if __name__ == '__main__':
     parser.add_argument('net_file')
     parser.add_argument('param_file')
     parser.add_argument('save_file')
-    parser.add_argument('--job', type=int)
+    parser.add_argument('--job', type=int, default=1)
     parser.add_argument('--save_dir', default=None)
     args = parser.parse_args()
 

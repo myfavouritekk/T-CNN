@@ -21,7 +21,7 @@ if __name__ == '__main__':
     parser.add_argument('--annot_file', default=None,
         help='Annotation file if available to calculate gt overlaps for training.')
     parser.add_argument('--cls')
-    parser.add_argument('--job', type=int)
+    parser.add_argument('--job', type=int, default=1)
     parser.add_argument('--sampling_num', type=int)
     parser.add_argument('--sampling_ratio', type=float)
     parser.add_argument('--save_feat', dest='save_feat', action='store_true')
