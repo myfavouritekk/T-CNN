@@ -5,19 +5,22 @@ function mcs_mgp(flow_root, score_root, output_root)
 % First written by Hongsheng Li. Refactored by Kai Kang.
 
 % parameters
-temporal_window_size = 7
+temporal_window_size = 7;
 half_tws = floor(temporal_window_size / 2);
-video_top_ratio = 0.0003
-top_bonus = 0.4
+video_top_ratio = 0.0003;
+top_bonus = 0.4;
 
 % paths
 time_step = 1;
 output_root = ...
-    fprintf('%s_window_size_%d_time_step_%d_top_ratio_%f_top_bonus_%f_optflow',...
+    sprintf('%s_window_size_%d_time_step_%d_top_ratio_%f_top_bonus_%f_optflow',...
         output_root, num2str(temporal_window_size), ...
         num2str(time_step), num2str(video_top_ratio), num2str(top_bonus));
 
-mkdir_if_missing(output_root);
+% mkdir_if_missing(output_root);
+if ~exist(output_root, 'dir')
+    mkdir(output_root);
+end
 
 video_name = dir(score_root);
 video_name = video_name(3:end);
@@ -30,13 +33,14 @@ for video_idx = 1:n_video
     end
     frame_name = dir(fullfile(score_root, video_name(video_idx).name, '*.mat'));
     n_frame = length(frame_name);
-    fprintf(1, '%d of %d total videos, name: %s.', video_idx, n_video, video_name(video_idx).name);
+    fprintf('%d of %d total videos, name: %s.',...
+        video_idx, n_video, video_name(video_idx).name);
 
     frame = struct('boxes',[],'zs',[]);
     frame(n_frame).boxes = [];
     neighbor_frame = frame;
 
-    fprintf(1, ' Loading boxes.');
+    fprintf(' Loading boxes.');
     for frame_idx = 1:n_frame
         file_name = fullfile(score_root, video_name(video_idx).name, frame_name(frame_idx).name);
         dot_pos = findstr(frame_name(frame_idx).name, '.');
@@ -53,8 +57,8 @@ for video_idx = 1:n_video
         x_map = single(optflow(:,:,1)) / 255 * 30 - 15;
         y_map = single(optflow(:,:,2)) / 255 * 30 - 15;
         [m,n] = size(x_map);
-        box_avg_x = hsli_boxes_average_sum(x_map, frame(frame_idx).boxes);
-        box_avg_y = hsli_boxes_average_sum(y_map, frame(frame_idx).boxes);
+        box_avg_x = boxes_average_sum(x_map, frame(frame_idx).boxes);
+        box_avg_y = boxes_average_sum(y_map, frame(frame_idx).boxes);
 
         for offset_idx = [-half_tws:-1 1:half_tws]
             neighbor_frame_idx = frame_idx + offset_idx;
