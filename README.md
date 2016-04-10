@@ -23,9 +23,10 @@ If you are using the `T-CNN` code in you project, please cite the following work
 ## License
 
 ## ImageNet 2015 VID detection results
-| Track      | Validation Set | Test Set | Rank in ILSVRC2015 |
-| Provided   | 73.8           | 67.8     | #1                 |
-| Additional | 77.0           | 69.7     | #2                 |
+| Track         | Validation Set   | Test Set   | Rank in ILSVRC2015   |
+| :------------ | :--------------: | :--------: | :------------------: |
+| Provided      | 73.8             | 67.8       | #1                   |
+| Additional    | 77.0             | 69.7       | #2                   |
 
 ## Installations
 ### Prerequisites
