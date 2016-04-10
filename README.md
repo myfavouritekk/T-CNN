@@ -22,7 +22,10 @@ If you are using the `T-CNN` code in you project, please cite the following work
 
 ## License
 
-## ImageNet VID detection results
+## ImageNet 2015 VID detection results
+| Track      | Validation Set | Test Set | Rank in ILSVRC2015 |
+| Provided   | 73.8           | 67.8     | #1                 |
+| Additional | 77.0           | 69.7     | #2                 |
 
 ## Installations
 ### Prerequisites
@@ -44,5 +47,9 @@ If you are using the `T-CNN` code in you project, please cite the following work
 ```
 
 ## Demo
+1. download the sample data and still-image detection results
+2. Multi-context suppression and motion-guided propagation
+3. Tubelet tracking and re-scoring
+
 
 
