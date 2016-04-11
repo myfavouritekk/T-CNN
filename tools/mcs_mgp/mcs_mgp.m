@@ -12,10 +12,9 @@ top_bonus = 0.4;
 
 % paths
 time_step = 1;
-output_root = ...
-    sprintf('%s_window_size_%d_time_step_%d_top_ratio_%f_top_bonus_%f_optflow',...
-        output_root, num2str(temporal_window_size), ...
-        num2str(time_step), num2str(video_top_ratio), num2str(top_bonus));
+output_root = fullfile(output_root,...
+    sprintf('window_size_%d_time_step_%d_top_ratio_%f_top_bonus_%f_optflow',...
+        temporal_window_size, time_step, video_top_ratio, top_bonus));
 
 % mkdir_if_missing(output_root);
 if ~exist(output_root, 'dir')
@@ -112,5 +111,3 @@ for video_idx = 1:n_video
     end
     clear frame neighbor_frame;
 end
-
-exit;
