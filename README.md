@@ -24,6 +24,7 @@ If you are using the `T-CNN` code in you project, please cite the following work
 ```
 
 ## License
+T-CNN is released under the MIT License.
 
 ## ImageNet 2015 VID detection results
 
@@ -102,7 +103,7 @@ If you are using the `T-CNN` code in you project, please cite the following work
         $ # spatial max-pooling
         $ find data/vids -type f | parallel python tools/scoring/tubelet_raw_dets_max_pooling.py {} data/tracks/{/.} data/mcs_mgp/window_size_7_time_step_1_top_ratio_0.000300_top_bonus_0.400000_optflow/{/.} data/score_proto/window_size_7_time_step_1_top_ratio_0.000300_top_bonus_0.400000_optflow_max_pooling/{/.} --overlap_thres 0.5
     ```
-    
+
 5. Tubelet visualization
 
     ```bash
@@ -111,7 +112,7 @@ If you are using the `T-CNN` code in you project, please cite the following work
 
 ## Beyond demo
 1. Optical flow extraction
-    
+
     ```bash
         $ python tools data_proc/gen_optical_flow.py -h
     ```
