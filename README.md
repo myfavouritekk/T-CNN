@@ -70,7 +70,13 @@ If you are using the `T-CNN` code in you project, please cite the following work
 4. Download a modified version of `FCN Tracker` originally developed by Lijun Wang et. al.
 
 ## Demo
-1. Download the sample data and still-image detection results
+1. Extract the sample data and still-image detection results
+
+    ```bash
+        $ cd $TCNN_ROOT
+        $ unzip sample_data.zip -d data/
+    ```
+
 2. Generate optical flow for the videos
 
     ```bash
@@ -94,12 +100,23 @@ If you are using the `T-CNN` code in you project, please cite the following work
         $ # tracking from raw detection files
         $ find data/vids -type f -name *.vid | parallel -j1 python tools/tracking/greedy_tracking_from_raw_dets.py {} data/mcs_mgp/window_size_7_time_step_1_top_ratio_0.000300_top_bonus_0.400000_optflow/{/.} data/tracks/{/.} --thres 3.15 --max_frames 100 --num 30
         $ # spatial max-pooling
-        $ find data/vids -type f | parallel python tools/scoring/tubelet_raw_dets_max_pooling.py {} data/tracks/{/.} data/mcs_mgp/window_size_7_time_step_1_top_ratio_0.000300_top_bonus_0.400000_optflow/{/.} data/score_proto/window_size_7_time_step_1_top_ratio_0.000300_top_bonus_0.400000_optflow_max_pooling{/.} --overlap_thres 0.5
+        $ find data/vids -type f | parallel python tools/scoring/tubelet_raw_dets_max_pooling.py {} data/tracks/{/.} data/mcs_mgp/window_size_7_time_step_1_top_ratio_0.000300_top_bonus_0.400000_optflow/{/.} data/score_proto/window_size_7_time_step_1_top_ratio_0.000300_top_bonus_0.400000_optflow_max_pooling/{/.} --overlap_thres 0.5
+    ```
+    
+5. Tubelet visualization
+
+    ```bash
+        $ python tools/visual/show_score_proto.py data/vids/ILSVRC2015_val_00007011.vid data/score_proto/window_size_7_time_step_1_top_ratio_0.000300_top_bonus_0.400000_optflow_max_pooling/ILSVRC2015_val_00007011/ILSVRC2015_val_00007011.airplane.score
     ```
 
 ## Beyond demo
 1. Optical flow extraction
+    
+    ```bash
+        $ python tools data_proc/gen_optical_flow.py -h
+    ```
+
 2. [vdetlib](https://github.com/myfavouritekk/vdetlib) for tracking and rescoring
-3. Results visualization
+3. Visualization tools in `tools/visual`.
 
 
