@@ -9,18 +9,18 @@ The `TCNN` framework is a deep learning framework for object detection in videos
 If you are using the `T-CNN` code in you project, please cite the following works.
 
 ```latex
-    @inproceedings{kang2016object,
-      Title = {Object Detection from Video Tubelets with Convolutional Neural Networks},
-      Author = {Kang, Kai and Ouyang, Wanli and Li, Hongsheng and Wang, Xiaogang},
-      Booktitle = {CVPR},
-      Year = {2016}
-    }
-    @article{kang2016tcnn,
-      title={T-CNN: Tubelets with Convolutional Neural Networks for Object Detection from Videos},
-      author={Kang, Kai and Li, Hongsheng and Yan, Junjie and Zeng, Xingyu and Yang, Bin and Xiao, Tong and Zhang, Cong and Wang, Zhe and Wang, Ruohui and Wang, Xiaogang and Ouyang, Wanli},
-      journal={arXiv preprint},
-      year={2016}
-    }
+@inproceedings{kang2016object,
+  Title = {Object Detection from Video Tubelets with Convolutional Neural Networks},
+  Author = {Kang, Kai and Ouyang, Wanli and Li, Hongsheng and Wang, Xiaogang},
+  Booktitle = {CVPR},
+  Year = {2016}
+}
+@article{kang2016tcnn,
+  title={T-CNN: Tubelets with Convolutional Neural Networks for Object Detection from Videos},
+  author={Kang, Kai and Li, Hongsheng and Yan, Junjie and Zeng, Xingyu and Yang, Bin and Xiao, Tong and Zhang, Cong and Wang, Zhe and Wang, Ruohui and Wang, Xiaogang and Ouyang, Wanli},
+  journal={arXiv preprint},
+  year={2016}
+}
 ```
 
 ## License
@@ -126,5 +126,5 @@ T-CNN is released under the MIT License.
 2. Matlab engines may stall after long periods of tracking. Please consider to kill the certain matlab session to continue.
 
 ## To-do list
-- [ ] Tubelet baysian classifier
+- [ ] Tubelet Bayesian classifier
 
