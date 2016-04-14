@@ -68,7 +68,12 @@ T-CNN is released under the MIT License.
         $ export PYTHONPATH=$TCNN_ROOT/External/caffe/python:$PYTHONPATH
     ```
 
-4. Download a modified version of `FCN Tracker` originally developed by Lijun Wang et. al.
+4. Download a modified version of [`FCN Tracker`](https://github.com/myfavouritekk/FCNT/tree/T-CNN) originally developed by Lijun Wang et. al.
+
+    ```bash
+        $ git clone --recursive -b T-CNN https://github.com/myfavouritekk/FCNT External/fcn_tracker_matlab
+        $ # compile the caffe-fcn_tracking and configure FCNT
+    ```
 
 ## Demo
 1. Extract the sample data and still-image detection results
