@@ -127,8 +127,7 @@ T-CNN is released under the MIT License.
 
 
 ## Known Issues
-1. The optical flow generation script `gen_optical_flow.py` may generate incorrect on some Linux distributions while works correctly on OSX.
-2. Matlab engines may stall after long periods of tracking. Please consider to kill the certain matlab session to continue.
+1. Matlab engines may stall after long periods of tracking. Please consider to kill the certain matlab session to continue.
 
 ## To-do list
 - [ ] Tubelet Bayesian classifier
