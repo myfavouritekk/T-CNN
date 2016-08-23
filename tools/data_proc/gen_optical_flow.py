@@ -34,7 +34,7 @@ if __name__ == '__main__':
     norm_width = 500.
     bound = args.bound
 
-    images = glob.glob(os.path.join(args.vid_dir,'*'))
+    images = sorted(glob.glob(os.path.join(args.vid_dir,'*')))
     print ("Processing {}: {} files... ".format(args.vid_dir, len(images))),
     sys.stdout.flush()
     tic = time.time()
